@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de texto a voz y voz a texto</title>
+    <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+
+<body>
+    <main>
+        <h1>Conversor de texto a voz y voz a texto</h1>
+        
+        <!-- Sección de demostración -->
+        <section>
+            <h2>Convertir texto a voz</h2>
+            <p>Escriba el texto a convertir a voz:</p>
+            <input type="text" id="textoAVoz">
+            <button onclick="convertirTextoAVoz()">Convertir</button>    
+
+            <h2>Convertir voz a texto</h2>
+            <p>Presione "Grabar" para comenzar la transcripción:</p>
+            <button onclick="VozATextp()">Grabar</button>
+            <p id="VozATexto">El texto transcrito aparecerá aquí.</p>
+        </section>
+
+        <!-- Sección de tutorial -->
+        <section>
+            <h2>¿Cómo funciona este conversor?</h2>
+            <p>Este conversor utiliza dos tecnologías principales:</p>
+            <ul>
+                <li><strong>Texto a voz:</strong> Convierte el texto ingresado en audio utilizando la API de síntesis de voz del navegador.</li>
+                <li><strong>Voz a texto:</strong> Usa la API de reconocimiento de voz para transcribir palabras habladas en texto.</li>
+            </ul>
+
+            <p>Sigue estos pasos para probarlo:</p>
+            <ol>
+                <li>Escribe cualquier frase en el campo de texto y presiona "Convertir" para escucharla.</li>
+                <li>Haz clic en "Grabar" y comienza a hablar. El texto transcrito aparecerá automáticamente.</li>
+            </ol>
+        </section>
+
+        <!-- Sección de recursos adicionales -->
+        <section>
+            <h2>Recursos adicionales</h2>
+            <p>Aprende más sobre estas tecnologías:</p>
+            <ul>
+                <li><a href="https://developer.mozilla.org/es/docs/Web/API/Web_Speech_API" target="_blank">Documentación de la API de Web Speech</a></li>
+                <li><a href="https://picocss.com/" target="_blank">Framework Pico CSS</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        // Función para convertir texto a voz
+        function convertirTextoAVoz() {
+            let texto = document.getElementById("textoAVoz").value;
+            console.log("Texto ingresado:", texto);  
+            
+            if (texto.trim() === "") {
+                alert("Por favor, ingrese un texto.");
+                return;
+            }
+
+            try {
+                let utterance = new SpeechSynthesisUtterance(texto);
+                window.speechSynthesis.speak(utterance);  
+            } catch (error) {
+                console.error("Error al convertir a voz:", error);
+            }
+        }
+
+        // Función para convertir voz a texto
+        function VozATextp() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                alert("Tu navegador no soporta la API de reconocimiento de voz");
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.start();
+
+            recognition.onresult = (event) => {
+                document.getElementById("VozATexto").innerText = event.results[0][0].transcript;
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Error de reconocimiento de voz:", event.error);
+            };
+        }
+    </script>
+
+    <style>
+        main {
+            margin: auto;
+            max-width: 800px;
+            padding: 1rem;
+        }
+
+        section {
+            margin-bottom: 2rem;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+    </style>
+</body>
+</html>
